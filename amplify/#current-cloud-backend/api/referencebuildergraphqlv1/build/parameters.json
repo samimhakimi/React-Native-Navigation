@@ -1,0 +1,14 @@
+{
+    "CreateAPIKey": 0,
+    "AppSyncApiName": "referencebuildergraphqlv1",
+    "DynamoDBBillingMode": "PAY_PER_REQUEST",
+    "DynamoDBEnableServerSideEncryption": "false",
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authtoptabtestc335db9c",
+            "Outputs.UserPoolId"
+        ]
+    },
+    "S3DeploymentBucket": "amplify-toptabtest-dev-111859-deployment",
+    "S3DeploymentRootKey": "amplify-appsync-files/6e66bcac66986bbb7652814c5515166b30131245"
+}

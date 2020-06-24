@@ -1,0 +1,75 @@
+# type Group @model 
+# {
+#   id: ID!
+#   company: String!
+#   members: [User!] @connection(keyName: "GroupUsers", fields:["id"])
+#   skills: [Skill!] @connection(keyName: "byGroup", fields:["id"])
+# }
+
+type User @model
+@auth
+# @key(name: "byTeam", fields: ["teamId", "id"], queryField: "UserByTeam")
+@auth(rules: [{ allow: owner, ownerField: "id", operations: [create, update, delete] }])
+{
+  id: ID!
+  email: String!
+  name: String
+  jobTitle: String
+  avatar: S3Object
+  teamId: ID!
+  team: Group @connection(keyName: "GroupUsers", fields:["teamId"])
+  evaluations: [Evaluation!] @connection(keyName: "UserEvaluations")
+  evaluationRequests: [EvaluationRequest!] @connection(keyName: "UserEvaluationRequests")
+}
+
+query UserByTeam($team: Team!) 
+{
+  UserByTeam(team: $team) {
+    items {
+      name
+      jobTitle
+    }
+  }
+}
+
+type Evaluation @model
+{
+  id: ID!
+  evaluator: User! @connection(keyName: "UserEvaluations")
+  evaluatee: User!
+  skills: [Skill!] 
+}
+
+type EvaluationRequest @model 
+@key(name: "UserEvaluationRequests", fields: ["evaluatee"])
+@key(name: "byEvaluatee", fields: ["evaluatee", "id"], queryField: "EvaluationRequestsByEvaluatee")
+{
+  id: ID!
+  evaluator: User!
+  evaluatee: User!
+}
+
+query EvaluationRequestsByEvaluatee($evaluatee: User!) {
+  EvaluationRequestsByEvaluatee(user: $evaluatee) {
+    items {
+      id
+      skills
+    }
+  }
+}
+
+type Skill @model 
+@key(name: "byGroup", fields: ["name","description"])
+{
+  id: ID!
+  name: String
+  description: String
+  grade: Float
+  comment: String
+}
+
+type S3Object {
+  bucket: String!
+  region: String!
+  key: String!
+}

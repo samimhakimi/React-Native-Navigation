@@ -1,0 +1,62 @@
+{
+	"providers": {
+		"awscloudformation": {
+			"AuthRoleName": "amplify-toptabtest-dev-111859-authRole",
+			"UnauthRoleArn": "arn:aws:iam::774927098937:role/amplify-toptabtest-dev-111859-unauthRole",
+			"AuthRoleArn": "arn:aws:iam::774927098937:role/amplify-toptabtest-dev-111859-authRole",
+			"Region": "us-west-2",
+			"DeploymentBucketName": "amplify-toptabtest-dev-111859-deployment",
+			"UnauthRoleName": "amplify-toptabtest-dev-111859-unauthRole",
+			"StackName": "amplify-toptabtest-dev-111859",
+			"StackId": "arn:aws:cloudformation:us-west-2:774927098937:stack/amplify-toptabtest-dev-111859/20508c40-91d6-11ea-8a1a-02a77ed54d64",
+			"AmplifyAppId": "d2pzcy09j84yoj"
+		}
+	},
+	"auth": {
+		"toptabtestc335db9c": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [],
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/amplify-toptabtest-dev-111859-deployment/amplify-cfn-templates/auth/toptabtestc335db9c-cloudformation-template.yml",
+				"logicalId": "authtoptabtestc335db9c"
+			},
+			"lastPushTimeStamp": "2020-05-13T10:23:45.842Z",
+			"output": {
+				"AppClientSecret": "16ajqm1licueib4ianes8qi13vtr5f9qebms4v4b7kiqvli15n3c",
+				"UserPoolId": "us-west-2_NOUaoo6CH",
+				"AppClientIDWeb": "18bgijnmukkmfinbtqcr9qbsd6",
+				"AppClientID": "7c4sqffvfiilcj3pm1389772vn",
+				"IdentityPoolId": "us-west-2:0c5581c7-3999-44af-9dec-3ffe9c34c757",
+				"IdentityPoolName": "toptabtestc335db9c_identitypool_c335db9c__dev",
+				"UserPoolName": "toptabtestc335db9c_userpool_c335db9c"
+			},
+			"lastPushDirHash": "xnmBYB43qEhpx8mLDVopE9Fzq9k="
+		}
+	},
+	"api": {
+		"referencebuildergraphqlv1": {
+			"service": "AppSync",
+			"providerPlugin": "awscloudformation",
+			"output": {
+				"authConfig": {
+					"additionalAuthenticationProviders": [],
+					"defaultAuthentication": {
+						"authenticationType": "AMAZON_COGNITO_USER_POOLS",
+						"userPoolConfig": {
+							"userPoolId": "authtoptabtestc335db9c"
+						}
+					}
+				},
+				"GraphQLAPIIdOutput": "f3jcjyakyvhvpgfd53fwkwxknq",
+				"GraphQLAPIEndpointOutput": "https://iourtajgivdy7mobj7mw2l7z2e.appsync-api.us-west-2.amazonaws.com/graphql"
+			},
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/amplify-toptabtest-dev-111859-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+				"logicalId": "apireferencebuildergraphqlv1"
+			},
+			"lastPushTimeStamp": "2020-05-13T10:23:46.206Z",
+			"lastPushDirHash": "VyW1M/UcxkpQG5VSTOhQxZgAoc8="
+		}
+	}
+}

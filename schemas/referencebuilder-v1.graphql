@@ -1,0 +1,84 @@
+type User 
+@model
+@auth(rules: [
+  { allow: owner, ownerField: "id", operations: [create, update, delete]}
+  ])
+{
+  id: ID!
+  createdAt: AWSDateTime
+  #presentation
+  name: String
+  jobTitle: String
+  avatar: S3Object
+  # dashboard
+  teamId: ID!
+  team: Team @connection(fields: ["teamId"]) # has one
+  requests: [EvaluationRequest] @connection(keyName: "forUser", fields: [ "id" ]) # has many
+  ratings: [Rating] @connection(keyName: "byUser", fields: [ "id" ]) # has many
+  # given ratings
+  evaluations: [Rating] @connection(keyName: "byAuthor", fields: [ "id" ]) # has many
+}
+
+type S3Object {
+  bucket: String!
+  region: String!
+  key: String!
+}
+
+type Team 
+@model 
+@auth(rules: [
+  {allow: owner, ownerField: "adminId", operations: [ create, update ]} # only admin can edit
+  # {allow: groups, groupsField: "members", operations: [ read ]} 
+]) 
+{
+  id: ID!
+  name: String!
+  adminId: ID!
+  admin: User! @connection(fields: ["adminId"]) # has one
+  company: String
+  members: [User!]
+}
+
+type Rating
+@model
+@auth(rules: [
+  {allow: owner, operations: [ update, delete ]}
+  ]) 
+@key(name: "byUser", fields: ["userId", "createdAt"]) # user connection 
+@key(name: "byAuthor", fields: ["authorId", "createdAt"]) # evaluator connection 
+{
+  id: ID!
+  # receiver
+  userId: ID!
+  user: User! @connection(fields:["userId"]) # belongs to
+  # evaluator
+  authorId: ID!
+  author: User! @connection(fields: ["authorId"]) # belongs to
+  # content
+  skillName: String
+  description: String
+  grade: Int
+  comment: String
+  createdAt: AWSDateTime
+}
+
+type EvaluationRequest # message
+@model
+@auth(rules: [
+  { allow: owner, ownerField: "evaluatorId", operations: [ create, delete ]},
+])
+@key(name: "forUser", fields: ["userId", "createdAt"]) # connection with user
+{
+  id: ID!
+  evaluatorId: ID!
+  userId: ID!
+  user: User! @connection(fields: [ "userId" ]) # belongs to
+  status: EvaluationStatus!
+  createdAt: AWSDateTime
+}
+
+enum EvaluationStatus {
+  PENDING
+  REVIEWED
+}

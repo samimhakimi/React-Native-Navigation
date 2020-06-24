@@ -1,0 +1,400 @@
+type User {
+  id: ID!
+  createdAt: AWSDateTime
+  name: String
+  jobTitle: String
+  avatar: S3Object
+  teamId: ID!
+  team: Team
+  requests(createdAt: ModelStringKeyConditionInput, filter: ModelEvaluationRequestFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelEvaluationRequestConnection
+  ratings(createdAt: ModelStringKeyConditionInput, filter: ModelRatingFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelRatingConnection
+  evaluations(createdAt: ModelStringKeyConditionInput, filter: ModelRatingFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelRatingConnection
+}
+
+type S3Object {
+  bucket: String!
+  region: String!
+  key: String!
+}
+
+type Team {
+  id: ID!
+  name: String!
+  adminId: ID!
+  admin: User!
+  company: String
+  members: [User!]
+}
+
+type Rating {
+  id: ID!
+  userId: ID!
+  user: User!
+  authorId: ID!
+  author: User!
+  skillName: String
+  description: String
+  grade: Int
+  comment: String
+  createdAt: AWSDateTime
+  owner: String
+}
+
+type EvaluationRequest {
+  id: ID!
+  evaluatorId: ID!
+  userId: ID!
+  user: User!
+  status: EvaluationStatus!
+  createdAt: AWSDateTime
+}
+
+enum EvaluationStatus {
+  PENDING
+  REVIEWED
+}
+
+input S3ObjectInput {
+  bucket: String!
+  region: String!
+  key: String!
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelUserConnection {
+  items: [User]
+  nextToken: String
+}
+
+input ModelStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelBooleanInput {
+  ne: Boolean
+  eq: Boolean
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelSizeInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+}
+
+input ModelUserFilterInput {
+  id: ModelIDInput
+  createdAt: ModelStringInput
+  name: ModelStringInput
+  jobTitle: ModelStringInput
+  teamId: ModelIDInput
+  and: [ModelUserFilterInput]
+  or: [ModelUserFilterInput]
+  not: ModelUserFilterInput
+}
+
+type Query {
+  getUser(id: ID!): User
+  listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection
+  getTeam(id: ID!): Team
+  listTeams(filter: ModelTeamFilterInput, limit: Int, nextToken: String): ModelTeamConnection
+  getRating(id: ID!): Rating
+  listRatings(filter: ModelRatingFilterInput, limit: Int, nextToken: String): ModelRatingConnection
+  getEvaluationRequest(id: ID!): EvaluationRequest
+  listEvaluationRequests(filter: ModelEvaluationRequestFilterInput, limit: Int, nextToken: String): ModelEvaluationRequestConnection
+}
+
+input CreateUserInput {
+  id: ID
+  createdAt: AWSDateTime
+  name: String
+  jobTitle: String
+  avatar: S3ObjectInput
+  teamId: ID!
+}
+
+input UpdateUserInput {
+  id: ID!
+  createdAt: AWSDateTime
+  name: String
+  jobTitle: String
+  avatar: S3ObjectInput
+  teamId: ID
+}
+
+input DeleteUserInput {
+  id: ID
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!, condition: ModelUserConditionInput): User
+  updateUser(input: UpdateUserInput!, condition: ModelUserConditionInput): User
+  deleteUser(input: DeleteUserInput!, condition: ModelUserConditionInput): User
+  createTeam(input: CreateTeamInput!, condition: ModelTeamConditionInput): Team
+  updateTeam(input: UpdateTeamInput!, condition: ModelTeamConditionInput): Team
+  deleteTeam(input: DeleteTeamInput!, condition: ModelTeamConditionInput): Team
+  createRating(input: CreateRatingInput!, condition: ModelRatingConditionInput): Rating
+  updateRating(input: UpdateRatingInput!, condition: ModelRatingConditionInput): Rating
+  deleteRating(input: DeleteRatingInput!, condition: ModelRatingConditionInput): Rating
+  createEvaluationRequest(input: CreateEvaluationRequestInput!, condition: ModelEvaluationRequestConditionInput): EvaluationRequest
+  updateEvaluationRequest(input: UpdateEvaluationRequestInput!, condition: ModelEvaluationRequestConditionInput): EvaluationRequest
+  deleteEvaluationRequest(input: DeleteEvaluationRequestInput!, condition: ModelEvaluationRequestConditionInput): EvaluationRequest
+}
+
+input ModelUserConditionInput {
+  createdAt: ModelStringInput
+  name: ModelStringInput
+  jobTitle: ModelStringInput
+  teamId: ModelIDInput
+  and: [ModelUserConditionInput]
+  or: [ModelUserConditionInput]
+  not: ModelUserConditionInput
+}
+
+enum ModelAttributeTypes {
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+  _null
+}
+
+type Subscription {
+  onCreateUser(id: String!): User @aws_subscribe(mutations: ["createUser"])
+  onUpdateUser(id: String!): User @aws_subscribe(mutations: ["updateUser"])
+  onDeleteUser(id: String!): User @aws_subscribe(mutations: ["deleteUser"])
+  onCreateTeam(adminId: String!): Team @aws_subscribe(mutations: ["createTeam"])
+  onUpdateTeam(adminId: String!): Team @aws_subscribe(mutations: ["updateTeam"])
+  onDeleteTeam: Team @aws_subscribe(mutations: ["deleteTeam"])
+  onCreateRating: Rating @aws_subscribe(mutations: ["createRating"])
+  onUpdateRating(owner: String!): Rating @aws_subscribe(mutations: ["updateRating"])
+  onDeleteRating(owner: String!): Rating @aws_subscribe(mutations: ["deleteRating"])
+  onCreateEvaluationRequest(evaluatorId: String!): EvaluationRequest @aws_subscribe(mutations: ["createEvaluationRequest"])
+  onUpdateEvaluationRequest: EvaluationRequest @aws_subscribe(mutations: ["updateEvaluationRequest"])
+  onDeleteEvaluationRequest(evaluatorId: String!): EvaluationRequest @aws_subscribe(mutations: ["deleteEvaluationRequest"])
+}
+
+type ModelTeamConnection {
+  items: [Team]
+  nextToken: String
+}
+
+input ModelTeamFilterInput {
+  id: ModelIDInput
+  name: ModelStringInput
+  adminId: ModelIDInput
+  company: ModelStringInput
+  and: [ModelTeamFilterInput]
+  or: [ModelTeamFilterInput]
+  not: ModelTeamFilterInput
+}
+
+input CreateTeamInput {
+  id: ID
+  name: String!
+  adminId: ID!
+  company: String
+}
+
+input UpdateTeamInput {
+  id: ID!
+  name: String
+  adminId: ID
+  company: String
+}
+
+input DeleteTeamInput {
+  id: ID
+}
+
+input ModelTeamConditionInput {
+  name: ModelStringInput
+  company: ModelStringInput
+  and: [ModelTeamConditionInput]
+  or: [ModelTeamConditionInput]
+  not: ModelTeamConditionInput
+}
+
+type ModelRatingConnection {
+  items: [Rating]
+  nextToken: String
+}
+
+input ModelRatingFilterInput {
+  id: ModelIDInput
+  userId: ModelIDInput
+  authorId: ModelIDInput
+  skillName: ModelStringInput
+  description: ModelStringInput
+  grade: ModelIntInput
+  comment: ModelStringInput
+  createdAt: ModelStringInput
+  and: [ModelRatingFilterInput]
+  or: [ModelRatingFilterInput]
+  not: ModelRatingFilterInput
+}
+
+input CreateRatingInput {
+  id: ID
+  userId: ID!
+  authorId: ID!
+  skillName: String
+  description: String
+  grade: Int
+  comment: String
+  createdAt: AWSDateTime
+}
+
+input UpdateRatingInput {
+  id: ID!
+  userId: ID
+  authorId: ID
+  skillName: String
+  description: String
+  grade: Int
+  comment: String
+  createdAt: AWSDateTime
+}
+
+input DeleteRatingInput {
+  id: ID
+}
+
+input ModelRatingConditionInput {
+  userId: ModelIDInput
+  authorId: ModelIDInput
+  skillName: ModelStringInput
+  description: ModelStringInput
+  grade: ModelIntInput
+  comment: ModelStringInput
+  createdAt: ModelStringInput
+  and: [ModelRatingConditionInput]
+  or: [ModelRatingConditionInput]
+  not: ModelRatingConditionInput
+}
+
+type ModelEvaluationRequestConnection {
+  items: [EvaluationRequest]
+  nextToken: String
+}
+
+input ModelEvaluationStatusInput {
+  eq: EvaluationStatus
+  ne: EvaluationStatus
+}
+
+input ModelEvaluationRequestFilterInput {
+  id: ModelIDInput
+  evaluatorId: ModelIDInput
+  userId: ModelIDInput
+  status: ModelEvaluationStatusInput
+  createdAt: ModelStringInput
+  and: [ModelEvaluationRequestFilterInput]
+  or: [ModelEvaluationRequestFilterInput]
+  not: ModelEvaluationRequestFilterInput
+}
+
+input CreateEvaluationRequestInput {
+  id: ID
+  evaluatorId: ID!
+  userId: ID!
+  status: EvaluationStatus!
+  createdAt: AWSDateTime
+}
+
+input UpdateEvaluationRequestInput {
+  id: ID!
+  evaluatorId: ID
+  userId: ID
+  status: EvaluationStatus
+  createdAt: AWSDateTime
+}
+
+input DeleteEvaluationRequestInput {
+  id: ID
+}
+
+input ModelEvaluationRequestConditionInput {
+  userId: ModelIDInput
+  status: ModelEvaluationStatusInput
+  createdAt: ModelStringInput
+  and: [ModelEvaluationRequestConditionInput]
+  or: [ModelEvaluationRequestConditionInput]
+  not: ModelEvaluationRequestConditionInput
+}
+
+input ModelStringKeyConditionInput {
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  between: [String]
+  beginsWith: String
+}

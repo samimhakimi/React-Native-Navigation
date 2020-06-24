@@ -1,0 +1,2 @@
+import _extends from"@babel/runtime/helpers/extends";import _toConsumableArray from"@babel/runtime/helpers/toConsumableArray";import{StyleSheet}from'react-native';export function resolve(styleProp,cleanedProps){if(styleProp){return StyleSheet?[styleProp,cleanedProps]:styleProp[typeof Symbol==="function"?Symbol.iterator:"@@iterator"]?Object.assign.apply(Object,[{}].concat(_toConsumableArray(styleProp),[cleanedProps])):_extends({},styleProp,cleanedProps);}else{return cleanedProps;}}
+//# sourceMappingURL=resolve.js.map

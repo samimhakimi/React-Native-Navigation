@@ -1,0 +1,32 @@
+type User @model
+@auth()
+@key(name: "byTeam", fields:["id", "teamId"])
+{
+  id: ID!
+  username: String
+  teamId: ID
+  team: Team
+  requests: [EvaluationRequest!] @connection(keyName: "byUser")
+}
+
+type Team @model 
+@auth(allow: "owner", ownerFields:["members"])
+{
+  id: ID!
+  members: [User!] @connection(keyName: "byTeam")
+}
+
+type EvaluationRequest @model 
+@key(name: "ByUser", fields: ["evaluateeId","createdAt"])
+{
+  id: ID!
+  evaluatorId: ID!
+  evaluateeId: ID!
+  status: EvaluationStatus!
+  createdAt: AWSDateTime!
+}
+
+enum EvaluationStatus {
+  PENDING
+  REVIEWED
+}

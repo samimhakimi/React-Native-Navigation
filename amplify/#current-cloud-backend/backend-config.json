@@ -1,0 +1,26 @@
+{
+	"auth": {
+		"toptabtestc335db9c": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": []
+		}
+	},
+	"api": {
+		"referencebuildergraphqlv1": {
+			"service": "AppSync",
+			"providerPlugin": "awscloudformation",
+			"output": {
+				"authConfig": {
+					"additionalAuthenticationProviders": [],
+					"defaultAuthentication": {
+						"authenticationType": "AMAZON_COGNITO_USER_POOLS",
+						"userPoolConfig": {
+							"userPoolId": "authtoptabtestc335db9c"
+						}
+					}
+				}
+			}
+		}
+	}
+}
