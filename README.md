@@ -2,13 +2,13 @@
 # https://www.youtube.com/watch?v=CmLStojMUwI
 
 Get started
-Clone repository
+1. Clone repository
 git clone https://github.com/samimhakimi/React-Native-Navigation
 
-Change directory
+2. Change directory
 cd React-Native-Navigation
 
-Install dependencies:
+3. Install dependencies:
 
 yarn install
 or
